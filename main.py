@@ -1,10 +1,7 @@
 from tqdm import tqdm
 import json
 from pathlib import Path
-import shutil
-import urllib.request as ulib
 import httpx
-import mimetypes
 
 def convertDateToFileName(date):
     return date.replace(" ", "_").replace(":", "-") 
@@ -42,13 +39,10 @@ for date, ext_type, url in tqdm(links):
         aws_link = httpx.post(url)
         aws_link = aws_link.content.decode("utf-8")
         data = httpx.get(aws_link)
-        # extension = mimetypes.guess_extension(data.headers.get('content-type', '').split(';')[0]) 
 
         with createFileName(date, ext_type).open(mode="wb") as output_image:
-            # filehandle, _ = ulib.urlretrieve(aws_link.content, output_image)
-            # shutil.copyfileobj(filehandle, output_image)
             output_image.write(data.content)
-            # print(data.content)
+
     except Exception as e:
         print("COULD NOT SAVE IMAGE/VIDEO")
         print(url)
